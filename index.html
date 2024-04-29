@@ -413,6 +413,56 @@ print("Total number of documents with class '+' and '-':", totalplus, totalneg)
 print("Total number of words in documents with class '+' and '-':", totalpluswords, totalnegwords)
 
 
+practical no. 6 | English text
+
+import re
+import numpy as np
+from collections import defaultdict
+from sklearn.model_selection import train_test_split
+
+data = [
+    ("I love programming", "positive"),
+    ("Python is amazing", "positive"),
+    ("I hate bugs", "negative"),
+    ("Debugging is annoying", "negative"),
+]
+
+def tokenize(text):
+    return re.findall(r'\b\w+\b', text.lower())
+
+def get_word_counts(data):
+    word_counts = defaultdict(lambda: {'positive': 0, 'negative': 0})
+    for text, label in data:
+        tokens = tokenize(text)
+        for token in tokens:
+            word_counts[token][label] += 1
+    return word_counts
+
+def get_class_counts(data):
+    counts = {'positive': 0, 'negative': 0}
+    for _, label in data:
+        counts[label] += 1
+    return counts
+
+def naive_bayes_predict(text, word_counts, class_counts):
+    tokens = tokenize(text)
+    class_probs = {'positive': class_counts['positive'], 'negative': class_counts['negative']}
+    total_docs = sum(class_counts.values())
+    for c in class_probs:
+        class_probs[c] = np.log(class_probs[c] / total_docs)
+        for token in tokens:
+            token_count = word_counts[token][c] + 1
+            total_class_count = sum([word_counts[token][l] for l in class_counts])
+            class_probs[c] += np.log(token_count / total_class_count)
+    return max(class_probs, key=class_probs.get)
+
+word_counts = get_word_counts(data)
+class_counts = get_class_counts(data)
+
+text = "I enjoy debugging"
+prediction = naive_bayes_predict(text, word_counts, class_counts)
+print(prediction)
+
 
 
 practical no. 7
