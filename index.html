@@ -98,6 +98,33 @@ plt.show()
 
 
 
+#practical no 2 | 2.0
+    
+import pandas as pd
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, precision_score
+
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred, average='macro')
+
+print(f'Accuracy: {accuracy:.4f}')
+print(f'Precision: {precision:.4f}')
+
+
+
 
 # practical no. 3
 
@@ -141,6 +168,72 @@ plt.title('KNN Accuracy for Different Values of K')
 plt.show()
 
 
+practical no 3 | 3.0 KNN
+
+# Import necessary libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Standardize features by removing the mean and scaling to unit variance
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Implement kNN classification
+k_values = range(1, 20)
+accuracies = []
+
+for k in k_values:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    y_pred = knn.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    accuracies.append(accuracy)
+
+# Plot accuracy versus k
+plt.figure(figsize=(10, 6))
+plt.plot(k_values, accuracies, marker='o', linestyle='-')
+plt.title('Accuracy vs. Number of Neighbors (k)')
+plt.xlabel('Number of Neighbors (k)')
+plt.ylabel('Accuracy')
+plt.xticks(k_values)
+plt.grid(True)
+plt.show()
+
+# Select the best k based on the plot
+best_k = k_values[np.argmax(accuracies)]
+print("Best k:", best_k)
+
+# Re-train with the best k
+best_knn = KNeighborsClassifier(n_neighbors=best_k)
+best_knn.fit(X_train, y_train)
+y_pred = best_knn.predict(X_test)
+
+# Calculate accuracy and plot confusion matrix
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+conf_mat = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+plt.imshow(conf_mat, interpolation='nearest', cmap=plt.cm.Blues)
+plt.title('Confusion Matrix')
+plt.colorbar()
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.show()
 
 
 practical no. 4
@@ -187,8 +280,8 @@ print("The predicted cluster is:", predicted_cluster)
 
 
 practical no. 5
-
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
 # Input data
@@ -218,9 +311,9 @@ print("Predicted response:")
 print(y_pred)
 
 # Predicting response using intercept and coefficients directly
-y_pred = model.intercept_ + model.coef_ * x
+y_pred_direct = model.intercept_ + model.coef_ * x
 print("Predicted response (using intercept and coefficients directly):")
-print(y_pred)
+print(y_pred_direct)
 
 # Generating new data and predicting response
 x_new = np.arange(5).reshape((-1, 1))
@@ -228,8 +321,16 @@ y_new = new_model.predict(x_new)
 print("Predicted response for new data:")
 print(y_new)
 
+# Plotting the data and regression line
+plt.scatter(x, y, color='black', label='Data')
+plt.plot(x, y_pred, color='blue', linewidth=2, label='Linear Regression')
+plt.title('Linear Regression')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.legend()
+plt.show()
 
-
+    
 
 practical no. 6
 
